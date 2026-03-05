@@ -1,0 +1,1055 @@
+@import "@syncfusion/ej2-base/styles/material.css";
+@import "@syncfusion/ej2-buttons/styles/material.css";
+@import "@syncfusion/ej2-layouts/styles/material.css";
+@import "@syncfusion/ej2-inputs/styles/material.css";
+@import "@syncfusion/ej2-navigations/styles/material.css";
+@import "@syncfusion/ej2-popups/styles/material.css";
+@import "@syncfusion/ej2-react-kanban/styles/material.css";
+
+/* ServiceNow Brand Colors + Grid System */
+:root {
+  --sn-infinite-blue: #032D42;
+  --sn-wasabi-green: #63DF4E;
+  --sn-blue-light: #0A4F6E;
+  --sn-blue-dark: #021A25;
+  --sn-column-header: #7FBCCD;
+  --sn-accent-glow: rgba(99, 223, 78, 0.15);
+  --board-gutter: 8px;
+  color-scheme: light;
+}
+
+html {
+  height: auto;
+  max-height: 100vh;
+  overflow: visible;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  background: transparent;
+  font-family: "Futura", "Avenir Next", "Helvetica Neue", sans-serif;
+}
+
+/* Hide Syncfusion license banner to prevent layout shifts */
+.e-banner,
+.e-banner-container,
+div[class*="banner"] {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Root container - prevent infinite expansion */
+#root {
+  width: 100%;
+  height: fit-content;
+  min-height: 0;
+  overflow: visible;
+  position: relative;
+  contain: layout style;
+}
+
+.hello-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  padding-top: 160px;
+  width: 100%;
+  max-width: 100%;
+  height: fit-content;
+  min-height: 0;
+  box-sizing: border-box;
+  position: relative;
+  contain: layout style;
+}
+
+.board-card {
+  width: min(780px, 94vw);
+  border-radius: 16px;
+  padding: 0;
+  background: var(--sn-infinite-blue);
+  box-shadow:
+    0 20px 50px rgba(3, 45, 66, 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* Header with ServiceNow Logo */
+.board-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--sn-infinite-blue) 0%, var(--sn-blue-light) 100%);
+  border-bottom: 2px solid var(--sn-wasabi-green);
+}
+
+.sn-logo {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 6px;
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--sn-infinite-blue);
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+
+.board-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.board-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: white;
+}
+
+.board-subtitle {
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ServiceNow Status Pill */
+.sn-status-pill {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.sn-status-checking {
+  background: rgba(127, 188, 205, 0.2);
+  border: 1px solid rgba(127, 188, 205, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.sn-status-connected {
+  background: rgba(99, 223, 78, 0.15);
+  border: 1px solid var(--sn-wasabi-green);
+  color: var(--sn-wasabi-green);
+}
+
+.sn-status-disconnected {
+  background: rgba(255, 107, 107, 0.15);
+  border: 1px solid rgba(255, 107, 107, 0.5);
+  color: rgba(255, 150, 150, 0.9);
+}
+
+/* ========================================
+   Dashboard Command Bar (Compact)
+   ======================================== */
+
+.command-bar {
+  background: var(--sn-blue-light);
+  border-top: 1px solid rgba(127, 188, 205, 0.2);
+  border-bottom: 1px solid rgba(127, 188, 205, 0.2);
+  padding: 10px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Navigation Tabs */
+.command-bar-nav {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid rgba(127, 188, 205, 0.15);
+  padding-bottom: 4px;
+}
+
+.nav-tab {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.2s ease;
+  position: relative;
+  font-family: inherit;
+  line-height: 1.3;
+}
+
+.nav-tab:hover {
+  background: rgba(127, 188, 205, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-tab:focus {
+  outline: 2px solid var(--sn-wasabi-green);
+  outline-offset: 2px;
+}
+
+.nav-tab.active {
+  color: var(--sn-wasabi-green);
+  background: rgba(99, 223, 78, 0.1);
+}
+
+.nav-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--sn-wasabi-green);
+  border-radius: 2px 2px 0 0;
+}
+
+/* Combined Team + Controls Row */
+.command-bar-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(127, 188, 205, 0.3) transparent;
+}
+
+.command-bar-team::-webkit-scrollbar {
+  height: 4px;
+}
+
+.command-bar-team::-webkit-scrollbar-thumb {
+  background: rgba(127, 188, 205, 0.3);
+  border-radius: 2px;
+}
+
+.team-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sn-column-header);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.team-chips {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.team-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(127, 188, 205, 0.15);
+  border: 1px solid rgba(127, 188, 205, 0.3);
+  border-radius: 16px;
+  padding: 4px 10px 4px 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.team-chip:hover {
+  background: rgba(127, 188, 205, 0.25);
+  border-color: rgba(127, 188, 205, 0.5);
+  transform: translateY(-1px);
+}
+
+.team-chip:focus {
+  outline: 2px solid var(--sn-wasabi-green);
+  outline-offset: 2px;
+}
+
+.team-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--sn-column-header);
+  color: var(--sn-infinite-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.team-name {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.team-add {
+  padding: 4px;
+  background: rgba(99, 223, 78, 0.1);
+  border-color: rgba(99, 223, 78, 0.3);
+}
+
+.team-add:hover {
+  background: rgba(99, 223, 78, 0.2);
+  border-color: var(--sn-wasabi-green);
+}
+
+.team-add .team-avatar {
+  background: var(--sn-wasabi-green);
+  color: var(--sn-infinite-blue);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Controls Row */
+.command-bar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.search-input {
+  background: rgba(127, 188, 205, 0.1);
+  border: 1px solid rgba(127, 188, 205, 0.3);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-family: inherit;
+  min-width: 160px;
+  transition: all 0.2s ease;
+  line-height: 1.3;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--sn-wasabi-green);
+  background: rgba(127, 188, 205, 0.15);
+  box-shadow: 0 0 0 2px rgba(99, 223, 78, 0.1);
+}
+
+.sort-select {
+  background: rgba(127, 188, 205, 0.1);
+  border: 1px solid rgba(127, 188, 205, 0.3);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.3;
+}
+
+.sort-select:hover {
+  border-color: rgba(127, 188, 205, 0.5);
+  background: rgba(127, 188, 205, 0.15);
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--sn-wasabi-green);
+  box-shadow: 0 0 0 2px rgba(99, 223, 78, 0.1);
+}
+
+.control-btn {
+  background: rgba(127, 188, 205, 0.1);
+  border: 1px solid rgba(127, 188, 205, 0.3);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.control-btn:hover {
+  background: rgba(127, 188, 205, 0.2);
+  border-color: rgba(127, 188, 205, 0.5);
+  transform: translateY(-1px);
+}
+
+.control-btn:focus {
+  outline: 2px solid var(--sn-wasabi-green);
+  outline-offset: 2px;
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.btn-text {
+  font-size: 11px;
+}
+
+/* Kebab Menu */
+.kebab-menu-container {
+  position: relative;
+}
+
+.kebab-btn {
+  background: rgba(127, 188, 205, 0.1);
+  border: 1px solid rgba(127, 188, 205, 0.3);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+  width: 32px;
+  height: 28px;
+}
+
+.kebab-btn:hover {
+  background: rgba(127, 188, 205, 0.2);
+  border-color: rgba(127, 188, 205, 0.5);
+  transform: translateY(-1px);
+}
+
+.kebab-btn:focus {
+  outline: 2px solid var(--sn-wasabi-green);
+  outline-offset: 2px;
+}
+
+.kebab-btn[aria-expanded="true"] {
+  background: rgba(99, 223, 78, 0.15);
+  border-color: var(--sn-wasabi-green);
+}
+
+.kebab-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--sn-blue-light);
+  border: 1px solid rgba(127, 188, 205, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 180px;
+  padding: 4px;
+  z-index: 1000;
+  animation: menuFadeIn 0.15s ease;
+}
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+  border-radius: 4px;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.menu-item:hover:not(:disabled) {
+  background: rgba(127, 188, 205, 0.2);
+  color: var(--sn-wasabi-green);
+}
+
+.menu-item:focus {
+  outline: 2px solid var(--sn-wasabi-green);
+  outline-offset: -2px;
+}
+
+.menu-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menu-icon {
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.menu-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.menu-divider {
+  height: 1px;
+  background: rgba(127, 188, 205, 0.2);
+  margin: 4px 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 720px) {
+  .command-bar {
+    padding: 8px 12px 6px;
+    gap: 6px;
+  }
+
+  .nav-tab {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .team-name {
+    display: none;
+  }
+
+  .team-chip {
+    padding: 4px;
+  }
+
+  .search-input {
+    min-width: 120px;
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+
+  .sort-select {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .control-btn {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .command-bar-controls {
+    gap: 6px;
+  }
+
+  .control-group {
+    gap: 4px;
+  }
+}
+
+/* Kanban Board Container */
+#sprint-board {
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--sn-infinite-blue);
+}
+
+#sprint-board .e-kanban-content {
+  background: var(--sn-infinite-blue);
+  padding: 0;
+  box-sizing: border-box !important;
+}
+
+/* Ensure content wrapper divs use border-box */
+#sprint-board .e-kanban-content > div {
+  box-sizing: border-box !important;
+}
+
+/* Header swimlane - left gutter only (Syncfusion adds padding-right: 15px inline) */
+/* #sprint-board .e-kanban-header .e-swimlane {
+  padding-left: var(--board-gutter) !important;
+} */
+
+/* Content swimlane - match header's scrollbar compensation */
+/* #sprint-board .e-kanban-content .e-swimlane {
+  padding-left: var(--board-gutter);
+  padding-right: 15px;
+  box-sizing: border-box !important;
+} */
+
+/* ========================================
+   TASK A: Column Header Structure Fix
+   Based on actual DOM: .e-kanban-header > .e-header-table > thead > .e-header-row > .e-header-cells
+   ======================================== */
+
+/* Remove background from header wrapper */
+#sprint-board .e-kanban-header {
+  background: transparent !important;
+  padding: 12px 0 0 0;
+}
+
+/* Header table - fixed layout for column alignment */
+#sprint-board .e-kanban-header .e-header-table {
+  background: transparent !important;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Enforce equal column widths (5 columns = 20% each) */
+#sprint-board .e-kanban-header .e-header-table colgroup col {
+  width: 20%;
+}
+
+/* Remove background from header row */
+#sprint-board .e-kanban-header .e-header-row {
+  background: transparent !important;
+}
+
+/* Individual column header cells - identical padding to content cells */
+#sprint-board .e-header-cells {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 4px !important;
+  box-sizing: border-box;
+}
+
+/* Header wrap - card styling moved here for alignment */
+#sprint-board .e-header-cells .e-header-wrap {
+  background: var(--sn-column-header);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 13px 16px;
+}
+
+/* Header title container (holds text + count) */
+#sprint-board .e-header-cells .e-header-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Column header text - dark blue on light teal */
+#sprint-board .e-header-cells .e-header-text {
+  color: var(--sn-infinite-blue) !important;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+/* Item count pill - wasabi green */
+#sprint-board .e-header-cells .e-item-count {
+  background: var(--sn-wasabi-green) !important;
+  color: var(--sn-infinite-blue) !important;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 5px 11px;
+  font-size: 11px;
+  flex-shrink: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Kanban Cards */
+#sprint-board .e-card {
+  border-radius: 8px;
+  box-shadow: 
+    0 3px 10px rgba(0, 0, 0, 0.35),
+    0 1px 3px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(10, 79, 110, 0.85);
+  padding: 14px;
+  margin: 0 4px 12px 4px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#sprint-board .e-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 18px rgba(0, 0, 0, 0.45),
+    0 0 0 2px var(--sn-wasabi-green);
+}
+
+#sprint-board .e-card-header {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#sprint-board .e-card-header-caption {
+  font-weight: 700;
+  color: #FFFFFF !important;
+  font-size: 15px;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+/* Card title - all possible selectors */
+#sprint-board .e-card .e-card-header-title,
+#sprint-board .e-card .e-card-title,
+#sprint-board .e-card-header .e-card-header-caption,
+#sprint-board .e-card-header * {
+  color: #FFFFFF !important;
+}
+
+#sprint-board .e-card-content {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+/* Card body/description - all possible selectors */
+#sprint-board .e-card .e-card-content,
+#sprint-board .e-card .e-card-text,
+#sprint-board .e-card-content * {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+#sprint-board .e-card-tag-field {
+  margin-top: 8px;
+}
+
+#sprint-board .e-card-tag {
+  background: var(--sn-accent-glow);
+  color: var(--sn-wasabi-green) !important;
+  border: 1px solid var(--sn-wasabi-green);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Comprehensive card text override - catch all remaining elements */
+#sprint-board .e-card,
+#sprint-board .e-card * {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Re-assert specific card element colors with higher specificity */
+#sprint-board .e-card .e-card-header-caption,
+#sprint-board .e-card .e-card-header *:not(.e-card-tag) {
+  color: #FFFFFF !important;
+}
+
+#sprint-board .e-card .e-card-content,
+#sprint-board .e-card .e-card-content *:not(.e-card-tag) {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+#sprint-board .e-card .e-card-tag,
+#sprint-board .e-card .e-card-tag * {
+  color: var(--sn-wasabi-green) !important;
+}
+
+/* ========================================
+   TASK B: Swimlane Section Framing & Spacing
+   Based on actual DOM: tr.e-swimlane-row + tr.e-content-row
+   ======================================== */
+
+/* Swimlane rows: force proper table layout and remove all offsets */
+#sprint-board tr.e-content-row.e-swimlane-row {
+  position: relative;
+  display: table-row !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#sprint-board tr.e-content-row.e-swimlane-row > td.e-content-cells[colspan],
+#sprint-board tr.e-content-row.e-swimlane-row > td {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  position: static !important;
+  transform: none !important;
+  left: auto !important;
+}
+
+/* Vertical spacing on swimlane header bars */
+#sprint-board tr.e-content-row.e-swimlane-row:first-of-type .e-swimlane-header {
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+#sprint-board tr.e-content-row.e-swimlane-row:not(:first-of-type) .e-swimlane-header {
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+
+
+/* Divider above each swimlane (except first) */
+#sprint-board tr.e-content-row.e-swimlane-row:not(:first-of-type)::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(127, 188, 205, 0.4) 10%,
+    rgba(127, 188, 205, 0.4) 90%,
+    transparent
+  );
+}
+
+/* Swimlane header container - fill TD with no offsets */
+#sprint-board tr.e-content-row.e-swimlane-row .e-swimlane-header {
+  background: linear-gradient(
+    to right, 
+    rgba(127, 188, 205, 0.2), 
+    rgba(127, 188, 205, 0.05)
+  ) !important;
+  border-top: 2px solid rgba(127, 188, 205, 0.5);
+  border-bottom: 2px solid rgba(127, 188, 205, 0.5);
+  padding: 14px 18px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  position: static !important;
+  left: auto !important;
+  transform: none !important;
+  translate: none !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 3px 6px rgba(0, 0, 0, 0.2);
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Swimlane expand/collapse icon */
+#sprint-board .e-swimlane-header .e-icons {
+  color: rgba(255, 255, 255, 0.9) !important;
+  flex-shrink: 0;
+}
+
+/* Header wrap (contains swimlane text) */
+#sprint-board .e-swimlane-header .e-header-wrap {
+  flex: 1;
+}
+
+/* Swimlane text - white for readability */
+#sprint-board .e-swimlane-header .e-swimlane-text {
+  color: #FFFFFF !important;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Swimlane item count - white on teal background */
+#sprint-board .e-swimlane-header .e-item-count {
+  color: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(127, 188, 205, 0.3) !important;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+/* Ensure all text in swimlane header is white */
+#sprint-board .e-swimlane-header * {
+  color: inherit;
+}
+
+/* Column Cell Containers - Card List Styling */
+
+/* Content table - identical layout to header table */
+#sprint-board .e-content-table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Lock content table width */
+#sprint-board .e-kanban-content .e-content-table {
+  width: 100% !important;
+}
+
+/* Enforce equal column widths (5 columns = 20% each) */
+#sprint-board .e-content-table colgroup col {
+  width: 20%;
+}
+
+/* Content row - swimlane content with proper spacing */
+#sprint-board tr.e-content-row:not(.e-swimlane-row) {
+  background: var(--sn-infinite-blue);
+  padding: 0;
+}
+
+/* Column cells - identical horizontal padding to header cells */
+#sprint-board tr.e-content-row:not(.e-swimlane-row) td.e-content-cells[data-key] {
+  background: transparent;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 4px 20px 4px;
+  vertical-align: top;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Remove border from last column */
+#sprint-board tr.e-content-row:not(.e-swimlane-row) td.e-content-cells[data-key]:last-child {
+  border-right: none;
+}
+
+/* Card wrapper - styled as list container */
+#sprint-board tr.e-content-row:not(.e-swimlane-row) td.e-content-cells[data-key] > .e-card-wrapper {
+  background: rgba(10, 79, 110, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 120px;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Text Contrast Fixes - Ensure readable text on dark backgrounds */
+
+/* Empty state messages - centered and readable */
+#sprint-board .e-empty-card {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 12px;
+  text-align: center;
+  padding: 20px 10px;
+  font-style: italic;
+}
+
+/* Card metadata */
+#sprint-board .e-card-label,
+#sprint-board .e-card-footer {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Swimlane row elements */
+#sprint-board .e-swimlane-row,
+#sprint-board .e-swimlane-row * {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Content cells and rows */
+#sprint-board .e-content-row,
+#sprint-board .e-content-cells {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Any icons in content area */
+#sprint-board .e-kanban-content .e-icons {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Drag and drop placeholder text */
+#sprint-board .e-placeholder,
+#sprint-board .e-drag-helper {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Override any default dark text colors */
+#sprint-board .e-kanban-content * {
+  color: inherit;
+}
+
+/* CASE 3: Force BOTH header + content swimlane wrappers to identical gutters */
+#sprint-board .e-kanban-header .e-swimlane,
+#sprint-board .e-kanban-content .e-swimlane {
+  padding-left: var(--board-gutter) !important;  /* CASE 3: same left gutter */
+  padding-right: 15px !important;                /* CASE 3: same scrollbar compensation */
+  box-sizing: border-box !important;
+}
+
+/* Force proper table layout semantics */
+#sprint-board .e-content-table tbody {
+  display: table-row-group !important;
+}
+
+#sprint-board .e-content-table tr.e-content-row {
+  display: table-row !important;
+}
+
+/* Neutralize horizontal transforms/positioning on swimlane rows */
+#sprint-board .e-content-table tr.e-content-row.e-swimlane-row {
+  transform: none !important;
+  translate: none !important;
+  left: auto !important;
+  margin-left: 0 !important;
+}
+
+/* Neutralize horizontal transforms/positioning on swimlane TDs */
+#sprint-board .e-content-table tr.e-content-row.e-swimlane-row > td {
+  transform: none !important;
+  translate: none !important;
+  left: auto !important;
+  margin-left: 0 !important;
+}
+
+@media (max-width: 720px) {
+  .board-card {
+    width: 96vw;
+  }
+  
+  .board-header {
+    padding: 12px 16px;
+  }
+  
+  .sn-logo {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
