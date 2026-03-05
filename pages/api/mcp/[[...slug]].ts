@@ -363,6 +363,419 @@ function createHelloServer() {
     }
   );
 
+  // ServiceNow CRUD Tools
+  server.registerTool(
+    "sn_query",
+    {
+      title: "Query ServiceNow Records",
+      description: "Query ServiceNow table records with filtering, pagination, and field selection",
+      inputSchema: z.object({
+        table: z.string().describe("The ServiceNow table name to query"),
+        query: z.string().optional().describe("Encoded query string for filtering"),
+        limit: z.number().optional().default(100).describe("Maximum number of records to return"),
+        offset: z.number().optional().describe("Number of records to skip"),
+        fields: z.string().optional().describe("Comma-separated list of fields to return")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const params: Record<string, string> = {
+          sysparm_limit: String(args.limit)
+        };
+        if (args.query) params.sysparm_query = args.query;
+        if (args.offset) params.sysparm_offset = String(args.offset);
+        if (args.fields) params.sysparm_fields = args.fields;
+
+        const result = await client.query(args.table, params);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+          structuredContent: result
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Query failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_get",
+    {
+      title: "Get ServiceNow Record",
+      description: "Retrieve a single ServiceNow record by sys_id",
+      inputSchema: z.object({
+        table: z.string().describe("The ServiceNow table name"),
+        sys_id: z.string().describe("The sys_id of the record to retrieve")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.get(args.table, args.sys_id);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+          structuredContent: result
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Get failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_create",
+    {
+      title: "Create ServiceNow Record",
+      description: "Create a new record in a ServiceNow table",
+      inputSchema: z.object({
+        table: z.string().describe("The ServiceNow table name"),
+        data: z.record(z.any()).describe("The data for the new record")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.create(args.table, args.data);
+
+        return {
+          content: [{ type: "text", text: `Record created successfully:\n${JSON.stringify(result, null, 2)}` }],
+          structuredContent: result
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Create failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_update",
+    {
+      title: "Update ServiceNow Record",
+      description: "Update an existing ServiceNow record",
+      inputSchema: z.object({
+        table: z.string().describe("The ServiceNow table name"),
+        sys_id: z.string().describe("The sys_id of the record to update"),
+        data: z.record(z.any()).describe("The fields to update")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.update(args.table, args.sys_id, args.data);
+
+        return {
+          content: [{ type: "text", text: `Record updated successfully:\n${JSON.stringify(result, null, 2)}` }],
+          structuredContent: result
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Update failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_delete",
+    {
+      title: "Delete ServiceNow Record",
+      description: "Delete a ServiceNow record (requires confirm: true)",
+      inputSchema: z.object({
+        table: z.string().describe("The ServiceNow table name"),
+        sys_id: z.string().describe("The sys_id of the record to delete"),
+        confirm: z.boolean().describe("Must be true to confirm deletion")
+      })
+    },
+    async (args) => {
+      try {
+        if (!args.confirm) {
+          return {
+            content: [{ type: "text", text: "Delete operation requires confirm: true" }],
+            structuredContent: { ok: false, error: "Delete operation requires confirm: true" }
+          };
+        }
+
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        await client.delete(args.table, args.sys_id);
+
+        return {
+          content: [{ type: "text", text: `Record ${args.sys_id} deleted successfully from ${args.table}` }],
+          structuredContent: { ok: true, message: "Record deleted successfully" }
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Delete failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_aggregate",
+    {
+      title: "Aggregate ServiceNow Data",
+      description: "Perform aggregation operations (COUNT, SUM, AVG, MIN, MAX) on ServiceNow tables",
+      inputSchema: z.object({
+        table: z.string().describe("The ServiceNow table name"),
+        operation: z.enum(['COUNT', 'SUM', 'AVG', 'MIN', 'MAX']).describe("Aggregation operation"),
+        field: z.string().optional().describe("Field to aggregate (required for SUM, AVG, MIN, MAX)"),
+        query: z.string().optional().describe("Encoded query string for filtering"),
+        groupBy: z.string().optional().describe("Field to group results by")
+      })
+    },
+    async (args) => {
+      try {
+        if (args.operation !== 'COUNT' && !args.field) {
+          return {
+            content: [{ type: "text", text: `Field is required for ${args.operation} operation` }],
+            structuredContent: { ok: false, error: `Field is required for ${args.operation} operation` }
+          };
+        }
+
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.aggregate(args.table, args.query, args.groupBy, args.operation, args.field);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+          structuredContent: { result }
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Aggregate failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_schema",
+    {
+      title: "Get ServiceNow Table Schema",
+      description: "Get the schema definition for a ServiceNow table",
+      inputSchema: z.object({
+        table: z.string().describe("The ServiceNow table name to get schema for")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.getSchema(args.table);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+          structuredContent: result
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Schema retrieval failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_discover",
+    {
+      title: "Discover ServiceNow Tables",
+      description: "Discover available ServiceNow tables",
+      inputSchema: z.object({
+        filter: z.string().optional().describe("Filter tables by name or label")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.discoverTables(args.filter);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+          structuredContent: { tables: result }
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Discover failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_relationships",
+    {
+      title: "Get CMDB Relationships",
+      description: "Get CMDB relationships for a configuration item",
+      inputSchema: z.object({
+        ci_sys_id: z.string().describe("Configuration Item sys_id"),
+        depth: z.number().optional().default(3).describe("Depth of relationship traversal")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.getRelationships(args.ci_sys_id, args.depth);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+          structuredContent: { result }
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Relationships retrieval failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_syslog",
+    {
+      title: "Query System Logs",
+      description: "Query ServiceNow system logs",
+      inputSchema: z.object({
+        query: z.string().optional().describe("Encoded query string for filtering logs"),
+        limit: z.number().optional().default(100).describe("Maximum number of log entries")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.getSystemLogs(args.query, args.limit);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+          structuredContent: { logs: result }
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `System logs retrieval failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "sn_attachments",
+    {
+      title: "List Attachments",
+      description: "List attachments for a specific record",
+      inputSchema: z.object({
+        table: z.string().describe("Table name"),
+        record_id: z.string().describe("Record sys_id")
+      })
+    },
+    async (args) => {
+      try {
+        const client = createClientFromEnv();
+        if (!client) {
+          return {
+            content: [{ type: "text", text: "ServiceNow client not configured" }],
+            structuredContent: { ok: false, error: "ServiceNow credentials not configured" }
+          };
+        }
+
+        const result = await client.getAttachments(args.table, args.record_id);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+          structuredContent: { attachments: result }
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: "text", text: `Attachments retrieval failed: ${error.message}` }],
+          structuredContent: { ok: false, error: error.message }
+        };
+      }
+    }
+  );
+
   return server;
 }
 
