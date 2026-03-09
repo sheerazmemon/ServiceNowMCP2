@@ -125,38 +125,6 @@ div[class*="banner"] {
   color: rgba(255, 255, 255, 0.65);
 }
 
-/* ServiceNow Status Pill */
-.sn-status-pill {
-  margin-left: auto;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.3s ease;
-}
-
-.sn-status-checking {
-  background: rgba(127, 188, 205, 0.2);
-  border: 1px solid rgba(127, 188, 205, 0.4);
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.sn-status-connected {
-  background: rgba(99, 223, 78, 0.15);
-  border: 1px solid var(--sn-wasabi-green);
-  color: var(--sn-wasabi-green);
-}
-
-.sn-status-disconnected {
-  background: rgba(255, 107, 107, 0.15);
-  border: 1px solid rgba(255, 107, 107, 0.5);
-  color: rgba(255, 150, 150, 0.9);
-}
-
 /* ========================================
    Dashboard Command Bar (Compact)
    ======================================== */
