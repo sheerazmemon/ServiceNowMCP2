@@ -672,7 +672,7 @@ export default function HelloWidget() {
     { name: 'Eugene Chuvyrov', initials: 'EC' },
     { name: 'Nick Diaz', initials: 'ND' },
     { name: 'Nicola Attico', initials: 'NA' },
-    { name: 'Grant Hulbert', initials: 'GH' }
+    { name: 'Sheeraz Memon', initials: 'SM' }
   ];
 
   const tabs = ['Backlog', 'Sprint Planning', 'Sprint Tracking'];
