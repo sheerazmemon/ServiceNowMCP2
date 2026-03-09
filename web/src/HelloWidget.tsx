@@ -76,7 +76,6 @@ export default function HelloWidget() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('due-date');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [snStatus, setSnStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
   const [snapshot, setSnapshot] = useState<any>(null);
   const [loadingSnapshot, setLoadingSnapshot] = useState<boolean>(true);
   const [snapshotError, setSnapshotError] = useState<string | null>(null);
@@ -649,29 +648,6 @@ export default function HelloWidget() {
     };
   }, [isMenuOpen]);
 
-  // Check ServiceNow connection on mount
-  useEffect(() => {
-    const checkServiceNowConnection = async () => {
-      try {
-        const response = await fetch('/api/servicenow/test');
-        const data = await response.json();
-        
-        if (data.ok) {
-          setSnStatus('connected');
-          console.log('ServiceNow connection successful:', data);
-        } else {
-          setSnStatus('disconnected');
-          console.warn('ServiceNow connection failed:', data.detail);
-        }
-      } catch (error) {
-        setSnStatus('disconnected');
-        console.error('Failed to check ServiceNow connection:', error);
-      }
-    };
-
-    checkServiceNowConnection();
-  }, []);
-
   // Fetch ServiceNow agile snapshot on mount
   useEffect(() => {
     async function loadSnapshot() {
@@ -786,11 +762,6 @@ const kanbanDataSource = useFallback ? sprintData : kanban.cards;
           <div className="board-header-text">
             <div className="board-title">Sprint Command</div>
             <div className="board-subtitle">ServiceNow Agile Board</div>
-          </div>
-          <div className={`sn-status-pill sn-status-${snStatus}`}>
-            {snStatus === 'checking' && '⏳ Checking...'}
-            {snStatus === 'connected' && '✅ SN Connected'}
-            {snStatus === 'disconnected' && '❌ SN Disconnected'}
           </div>
         </header>
 
